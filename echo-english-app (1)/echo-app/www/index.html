@@ -12,7 +12,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;max-width:560px;margin:auto;min-height:100vh}
 header{padding:16px 16px 8px;display:flex;justify-content:space-between;align-items:center}
 h1{font-size:20px;margin:0}.stars{color:#f5a524;font-weight:600}
-nav{display:flex;gap:8px;padding:8px 16px}nav button{flex:1;padding:10px 4px;border:0;border-radius:12px;background:var(--card);color:var(--tx);font-size:14px}
+nav{display:flex;gap:4px;padding:8px 10px;overflow-x:auto}nav button{flex:1;padding:9px 2px;font-size:12px!important;white-space:nowrap;border:0;border-radius:12px;background:var(--card);color:var(--tx);font-size:14px}
 nav button.on{background:var(--pri);color:#fff}
 main{padding:8px 16px 120px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -36,8 +36,12 @@ main{padding:8px 16px 120px}
 <nav id="nav"></nav><main id="main"></main><div id="barwrap"></div>
 <script>
 const $=s=>document.querySelector(s);
-const WORDS=[["🐶","dog","小狗"],["🐱","cat","小猫"],["🍎","apple","苹果"],["🍌","banana","香蕉"],["💧","water","水"],["🥛","milk","牛奶"],["🚗","car","汽车"],["☀️","sun","太阳"],["🌙","moon","月亮"],["👋","hello","你好"],["🐘","elephant","大象"],["📖","book","书"]];
-const SCN={daily:[
+const WORDS="🐶,dog,小狗|🐱,cat,小猫|🐭,mouse,老鼠|🐰,rabbit,兔子|🐷,pig,小猪|🐮,cow,奶牛|🐴,horse,马|🐵,monkey,猴子|🐘,elephant,大象|🦁,lion,狮子|🐯,tiger,老虎|🐻,bear,熊|🐼,panda,熊猫|🐸,frog,青蛙|🐟,fish,鱼|🐦,bird,鸟|🦆,duck,鸭子|🐔,chicken,鸡|🐢,turtle,乌龟|🦋,butterfly,蝴蝶|🍎,apple,苹果|🍌,banana,香蕉|🍊,orange,橙子|🍇,grape,葡萄|🍓,strawberry,草莓|🍉,watermelon,西瓜|🍞,bread,面包|🥛,milk,牛奶|🍚,rice,米饭|🥚,egg,鸡蛋|🍰,cake,蛋糕|🍪,cookie,饼干|🚗,car,汽车|🚌,bus,公交车|🚲,bike,自行车|✈️,plane,飞机|🚢,boat,船|🚂,train,火车|☀️,sun,太阳|🌙,moon,月亮|⭐,star,星星|☁️,cloud,云|🌧️,rain,雨|🌳,tree,树|🌸,flower,花|🏠,house,房子|📖,book,书|✏️,pencil,铅笔|⚽,ball,球|🎈,balloon,气球|👁️,eye,眼睛|👃,nose,鼻子|👂,ear,耳朵|✋,hand,手|🦶,foot,脚|💧,water,水|👋,hello,你好".split("|").map(x=>x.split(","));let WS=WORDS.slice(0,12);
+function shuf(){WS=[...WORDS].sort(()=>Math.random()-.5).slice(0,12);home()}
+const SCN={kids:[
+{t:"Hello 你好",e:"👋",s:[{a:"Hello! I am Echo.",z:"你好!我是 Echo。",x:["Hello","Hi"]},{a:"What is your name?",z:"你叫什么名字?",x:["My name is Tom","I am Tom"]},{a:"Nice to meet you!",z:"很高兴认识你!",x:["Nice to meet you too"]}]},
+{t:"Thank you 谢谢",e:"🍎",s:[{a:"Here is an apple for you.",z:"这个苹果给你。",x:["Thank you"]},{a:"You are welcome! Do you like apples?",z:"不客气!你喜欢苹果吗?",x:["Yes I do","I like apples"]},{a:"Me too! Goodbye!",z:"我也是!再见!",x:["Goodbye","Bye bye"]}]},
+{t:"My pet 小动物",e:"🐱",s:[{a:"Do you have a cat?",z:"你有小猫吗?",x:["Yes I do","No I do not"]},{a:"What color is it?",z:"它是什么颜色?",x:["It is white","It is black"]},{a:"I like cats. Do you like dogs?",z:"我喜欢猫。你喜欢狗吗?",x:["Yes I do","No I do not"]}]}],daily:[
 {t:"打招呼",e:"👋",s:[{a:"Hi! How are you today?",z:"你好!你今天怎么样?",x:["I’m fine, thank you","I’m good, thanks"]},{a:"Nice! What’s your name?",z:"真好!你叫什么名字?",x:["My name is Tom","I’m Tom"]},{a:"Nice to meet you, Tom!",z:"很高兴认识你!",x:["Nice to meet you too"]}]},
 {t:"咖啡店点单",e:"☕",s:[{a:"Welcome! What would you like to drink?",z:"欢迎!想喝点什么?",x:["I’d like a coffee, please","Can I have a latte, please"]},{a:"Sure. Hot or iced?",z:"好的,热的还是冰的?",x:["Iced, please","Hot, please"]},{a:"That’s five dollars.",z:"一共五美元。",x:["Here you are","Here is the money"]}]}],
 biz:[
@@ -47,14 +51,14 @@ let stars=0;try{stars=+localStorage.getItem("st")||0}catch(e){}
 const addStar=n=>{stars+=n;$("#stars").textContent="⭐ "+stars;try{localStorage.setItem("st",stars)}catch(e){}};
 const synth=window.speechSynthesis,SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const NP=(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())?Capacitor.Plugins:null;
-const speak=async(t,r=.9)=>{t=t.replace(/’/g,"'");if(NP&&NP.TextToSpeech){try{await NP.TextToSpeech.stop()}catch(e){}try{await NP.TextToSpeech.speak({text:t,lang:"en-US",rate:r,pitch:1,volume:1})}catch(e){}return}
- return new Promise(ok=>{if(!synth)return ok();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=r;u.onend=u.onerror=ok;synth.cancel();synth.speak(u)})};
-async function listen(){if(NP&&NP.SpeechRecognition){try{const S=NP.SpeechRecognition;const a=await S.available();if(!a.available)return null;const p=await S.requestPermissions();if(p.speechRecognition!=="granted")return null;const res=await S.start({language:"en-US",maxResults:1,partialResults:false,popup:false});return (res.matches&&res.matches[0])||""}catch(e){return ""}}
- return new Promise(ok=>{if(!SR)return ok(null);const r=new SR();r.lang="en-US";r.interimResults=false;let d=0;const f=v=>{if(!d){d=1;ok(v)}};r.onresult=e=>f(e.results[0][0].transcript);r.onerror=()=>f("");r.onend=()=>f("");try{r.start()}catch(e){f("")}})}
+const speak=async(t,r=.9,l="en-US")=>{t=t.replace(/’/g,"'");if(NP&&NP.TextToSpeech){try{await NP.TextToSpeech.stop()}catch(e){}try{await NP.TextToSpeech.speak({text:t,lang:l,rate:r,pitch:1,volume:1})}catch(e){}return}
+ return new Promise(ok=>{if(!synth)return ok();const u=new SpeechSynthesisUtterance(t);u.lang=l;u.rate=r;u.onend=u.onerror=ok;synth.cancel();synth.speak(u)})};
+async function listen(lang="en-US"){if(NP&&NP.SpeechRecognition){try{const S=NP.SpeechRecognition;const a=await S.available();if(!a.available)return null;const p=await S.requestPermissions();if(p.speechRecognition!=="granted")return null;const res=await S.start({language:lang,maxResults:1,partialResults:false,popup:false});return (res.matches&&res.matches[0])||""}catch(e){return ""}}
+ return new Promise(ok=>{if(!SR)return ok(null);const r=new SR();curRec=r;r.lang=lang;r.interimResults=false;let d=0;const f=v=>{if(!d){d=1;ok(v)}};r.onresult=e=>f(e.results[0][0].transcript);r.onerror=()=>f("");r.onend=()=>f("");try{r.start()}catch(e){f("")}})}
 const norm=s=>s.toLowerCase().replace(/’/g,"'").replace(/[^a-z' ]/g," ").split(/\s+/).filter(Boolean);
 const score=(said,exp)=>{const w=norm(said);return Math.max(...exp.map(x=>{const e=norm(x);return e.filter(k=>w.includes(k)).length/e.length}))};
 let tab="kids";
-function nav(){$("#nav").innerHTML=[["kids","👶 启蒙"],["daily","☕ 日常"],["biz","💼 商务"],["chat","🤖 自由"],["scan","📷 扫读"]].map(([k,n])=>`<button class="${tab==k?"on":""}" onclick="tab='${k}';nav();home()">${n}</button>`).join("")}
+function nav(){$("#nav").innerHTML=[["kids","👶启蒙"],["daily","☕日常"],["biz","💼商务"],["chat","🤖自由"],["scan","📷扫读"],["lib","📚分级"]].map(([k,n])=>`<button class="${tab==k?"on":""}" onclick="tab='${k}';nav();home()">${n}</button>`).join("")}
 let ocr=null,stxt="",slow=false;
 async function scanImg(f){if(!f)return;const st=$("#sst");st.textContent="加载图片…";const im=$("#sim");im.src=URL.createObjectURL(f);im.style.display="block";
  await new Promise(r=>im.onload=r);const k=Math.min(1,1600/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=im.naturalWidth*k;c.height=im.naturalHeight*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
@@ -63,41 +67,107 @@ async function scanImg(f){if(!f)return;const st=$("#sst");st.textContent="加载
   if(!stxt){st.textContent="没识别到英文,请靠近一点、保持光线充足再拍";return}st.textContent="点单词听发音,点按钮朗读全文";showScan()}
  catch(e){st.textContent="识别失败:"+e.message}}
 function showScan(){const w=stxt.split("\n").map(l=>l.split(" ").map(x=>x?`<span onclick="speak('${x.replace(/[^A-Za-z]/g,"")}',.7)" style="padding:2px;display:inline-block">${x}</span>`:"").join(" ")).join("<br>");
- $("#sres").innerHTML=`<div class="card" style="text-align:left;margin-top:10px;line-height:1.9">${w}</div><div style="display:flex;gap:8px;margin-top:10px"><button class="sm" style="flex:1" onclick="readAll()">🔊 读全文</button><button class="sm" id="sl" onclick="slow=!slow;this.textContent=slow?'🐢 慢速':'🐇 正常'">🐇 正常</button><button class="sm" onclick="synth&&synth.cancel();NP&&NP.TextToSpeech&&NP.TextToSpeech.stop()">⏹</button></div>`}
+ $("#sres").innerHTML=`<div class="card" style="text-align:left;margin-top:10px;line-height:1.9">${w}</div><div style="display:flex;gap:8px;margin-top:10px"><button class="sm" style="flex:1" onclick="readAll()">🔊 读全文</button><button class="sm" id="sl" onclick="slow=!slow;this.textContent=slow?'🐢 慢速':'🐇 正常'">🐇 正常</button><button class="sm" onclick="saveScan()">📚存书</button><button class="sm" onclick="synth&&synth.cancel();NP&&NP.TextToSpeech&&NP.TextToSpeech.stop()">⏹</button></div>`}
 async function readAll(){for(const x of stxt.replace(/\n+/g," ").split(/(?<=[.!?])\s+/)){if(x.trim())await speak(x,slow?.6:.9)}}
+const LIB=[
+{t:"Lv1 字母发音 CVC",lv:1,lines:["The cat sat.","A big red hat.","The pig can dig.","I see a dog.","Sit on the bed.","The sun is hot."]},
+{t:"Lv2 高频词(前学前)",lv:2,lines:["I can see a red car.","Come and look at me.","Help me find the blue ball.","Jump up and down.","We go to play.","Where is my little yellow duck?"]},
+{t:"Lv3 My Cat(原创小故事)",lv:3,lines:["I have a cat.","My cat is small and white.","She likes milk.","She jumps on my bed.","I love my cat."]},
+{t:"Lv3 At the Park(原创小故事)",lv:3,lines:["We go to the park.","I run with my dad.","Mom sits under a big tree.","We eat apples.","It is a happy day."]}];
+const mb=()=>{try{return JSON.parse(localStorage.getItem("books")||"[]")}catch(e){return []}};
+const sb=a=>{try{localStorage.setItem("books",JSON.stringify(a))}catch(e){}};
+const sents=t=>t.replace(/\n+/g," ").split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean);
+const SONGS=[
+{t:"Wave Hello",e:"👋",a:"👋 边唱边挥手",song:1,lines:["Wave, wave, wave hello.","Hello, hello, hello!","Wave to mom, wave to dad.","Hello, hello, I am glad!"]},
+{t:"Clap Your Hands",e:"👏",a:"👏 跟着动作做:拍手、跺脚、跳、坐下",song:1,lines:["Clap, clap, clap your hands.","Stomp, stomp, stomp your feet.","Jump, jump, jump up high.","Sit down, nice and neat."]},
+{t:"Rainbow Colors",e:"🌈",a:"🌈 指一指身边的颜色",song:1,lines:["Red, red, I see red.","Blue, blue, I see blue.","Yellow, yellow, the sun is yellow.","Green, green, I see green too."]},
+{t:"Animal Sounds",e:"🐮",a:"🐮 学一学动物的叫声",song:1,lines:["The dog says woof, woof, woof.","The cat says meow, meow, meow.","The duck says quack, quack, quack.","The cow says moo, moo, moo."]},
+{t:"Wash Your Hands",e:"🧼",a:"🧼 边唱边洗手",song:1,lines:["Wash, wash, wash my hands.","Rub, rub, rub with soap.","Rinse, rinse, rinse with water.","Dry, dry, dry, hooray!"]},
+{t:"Count to Five",e:"🖐️",a:"🖐️ 伸出手指一起数",song:1,lines:["One, one, one red sun.","Two, two, two blue eyes.","Three, three, three green frogs.","Four, four, four yellow ducks.","Five, five, five, hello, hi!"]}];
+const AUD=`<label class="sm" style="display:block;margin:8px 0;text-align:center">🎧 加载手机里的歌曲音频(可选)<input type="file" accept="audio/*" hidden onchange="const a=document.getElementById('au');a.src=URL.createObjectURL(this.files[0]);a.style.display='block';a.play()"></label><audio id="au" controls style="width:100%;display:none;margin-bottom:8px"></audio>`;
+const idb=()=>new Promise((ok,no)=>{const r=indexedDB.open("echo",1);r.onupgradeneeded=()=>r.result.createObjectStore("au");r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+async function idbPut(k,v){try{const d=await idb();await new Promise(ok=>{const t=d.transaction("au","readwrite");t.objectStore("au").put(v,k);t.oncomplete=ok;t.onerror=ok})}catch(e){}}
+async function idbGet(k){try{const d=await idb();return await new Promise(ok=>{const q=d.transaction("au").objectStore("au").get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)})}catch(e){return null}}
+async function importFiles(fs){const T={},A={};for(const f of fs){const n=f.name.replace(/\.[^.]+$/,"");if(/^audio\//.test(f.type)||/\.(mp3|m4a|wav|ogg|aac)$/i.test(f.name))A[n]=f;else if(/\.txt$/i.test(f.name)||f.type=="text/plain")T[n]=await f.text()}
+ const all=mb();let c=0;for(const n of new Set([...Object.keys(T),...Object.keys(A)])){const raw=T[n]||"";let L=raw.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(L.length&&L.join("").length/L.length>80)L=sents(raw);
+  const b=all.find(k=>k.t==n);if(L.length){b?b.lines=L:all.push({t:n,lines:L})}else if(!b)all.push({t:n,lines:["(请在书架里粘贴同名歌词或文本)"]});if(A[n])await idbPut(n,A[n]);c++}
+ sb(all);alert("已导入 "+c+" 项");libHome()}
+function delBook(i){if(!confirm("删除这本?"))return;const a=mb();a.splice(i,1);sb(a);libHome()}
+let bk=null;
+function libHome(){const my=mb();$("#main").innerHTML=`<p>由浅入深的分级读物,点 🎤 跟读,读对得星星。</p><div class="list">${LIB.map((b,i)=>`<button class="card" onclick="openBook(0,${i})"><b>${b.t}</b><small>${b.lines.length} 句</small></button>`).join("")}</div><h3>🎵 儿歌</h3><div class="list">${SONGS.map((b,i)=>`<button class="card" onclick="openBook(2,${i})"><b>${b.e} ${b.t}</b><small>${b.lines.length} 句 · 带动作</small></button>`).join("")}</div><button class="sm" style="width:100%;margin:10px 0" onclick="genStory()">✨ 生成新故事(离线 AI)</button><div class="note" id="gs"></div><h3>📖 我的书架</h3><label class="sm" style="display:block;text-align:center;margin:8px 0">📂 批量导入(txt 文本 + 音频,同名自动配对)<input type="file" multiple accept="text/plain,.txt,audio/*" hidden onchange="importFiles(this.files)"></label><div class="list">${my.map((b,i)=>`<button class="card" onclick="openBook(1,${i})"><b>${b.t}</b><small>${b.lines.length} 句</small></button>`).join("")||"<small>还没有书。拍照扫读后可存入,或在下面粘贴文字。</small>"}</div><div class="note">导入自己的书(粘贴英文文本):<input id="bt" placeholder="书名" style="width:100%;margin:6px 0;padding:8px"><textarea id="bx" rows="4" style="width:100%;padding:8px" placeholder="粘贴英文内容"></textarea><button class="sm" onclick="addBook($('#bt').value||'我的书',$('#bx').value)">保存到书架</button> <button class="sm" onclick="if(confirm('清空我的书架?')){sb([]);libHome()}">清空书架</button></div>`}
+function addBook(t,x){const l=sents(x||"");if(!l.length)return;const a=mb(),b=a.find(k=>k.t==t);b?b.lines.push(...l):a.push({t,lines:l});sb(a);libHome()}
+async function genStory(){const tp=["a puppy","a rainy day","a red balloon","my school","a little bird","a birthday cake","a sunny park"][Math.random()*7|0];$("#gs").textContent="生成中…";
+ try{const r=await fetch(gu(),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:[{role:"user",content:`Write a very simple 5-sentence story for a young child about ${tp}. Use easy words. One sentence per line. No title and no extra text.`}],max_tokens:160,temperature:.9})});
+  const j=await r.json(),t=j.choices[0].message.content.trim(),n="AI故事·"+tp;addBook(n,t);openBook(1,mb().findIndex(b=>b.t==n))}
+ catch(e){$("#gs").textContent="需要先在 Termux 启动本地 AI(见 README)"}}
+function openBook(m,i){bk=m==2?SONGS[i]:m?mb()[i]:LIB[i];$("#main").innerHTML=`<button class="back" onclick="home()">← 返回</button><h3>${bk.t}</h3>${bk.a?`<p>${bk.a}</p>`:""}${(bk.song||m==1)?AUD:""}${bk.lines.map((l,j)=>`<div class="card" style="text-align:left;margin-bottom:8px"><div style="font-size:18px;line-height:1.5">${l}</div><div style="margin-top:8px;display:flex;gap:8px"><button class="sm" onclick="speak(bk.lines[${j}],.9)">🔊</button><button class="sm" onclick="speak(bk.lines[${j}],.6)">🐢</button><button class="sm" onclick="fr(${j})">🎤 跟读</button><span id="r${j}" style="align-self:center;font-size:13px"></span></div></div>`).join("")}<button class="sm" onclick="rdAll()">▶ 全部朗读</button>${m==1?`<button class="sm" style="margin-left:8px" onclick="delBook(${i})">🗑 删除这本</button>`:""}`;if(m==1)idbGet(bk.t).then(b=>{if(b){const a=$("#au");a.src=URL.createObjectURL(b);a.style.display="block"}})}
+async function rdAll(){for(const l of bk.lines)await speak(l,.8)}
+async function fr(j){const e=$("#r"+j);e.textContent="听…";await speak(bk.lines[j],.7);e.textContent="请跟读…";const t=await listen();if(t===null){e.textContent="不支持语音识别";return}const p=score(t,[bk.lines[j]]);if(p>=.8){addStar(1);e.textContent="🎉 +1⭐"}else e.textContent=`听到“${t||"…"}” ${Math.round(p*100)}%`}
+function saveScan(){const t=prompt("存入哪本书?(同名则追加页面)","我的书");if(t)addBook(t,stxt)}
+const DICT="桌子/书桌,table,🔤|椅子,chair,🪑|床,bed,🛏️|门,door,🚪|窗户,window,🪟|杯子,cup,🥤|碗,bowl,🥣|勺子,spoon,🥄|鞋子/鞋,shoes,👟|帽子,hat,🧢|衣服,clothes,👕|裤子,pants,👖|书包,bag,🎒|电视,TV,📺|手机,phone,📱|灯,light,💡|妈妈,mom,👩|爸爸,dad,👨|爷爷,grandpa,👴|奶奶,grandma,👵|哥哥,brother,👦|姐姐,sister,👧|宝宝,baby,👶|红色,red,🟥|蓝色,blue,🟦|黄色,yellow,🟨|绿色,green,🟩|大,big,🐘,It is big.|小,small,🐭,It is small.|开心/高兴,happy,😊,I am happy.|吃,eat,🍽️,I can eat.|喝,drink,🥛,I can drink.|跑,run,🏃,I can run.|跳,jump,🤸,I can jump.|谢谢,thank you,🙏,Thank you.|再见,goodbye,👋,Goodbye.";
+const D=[];DICT.split("|").forEach(x=>{const f=x.split(",");D.push({z:f[0].split("/"),en:f[1],e:f[2]||"🔤",s:f[3]})});
+WORDS.forEach(w=>{const z=[w[2]];if(/^小/.test(w[2]))z.push(w[2].slice(1));D.push({z,en:w[1],e:w[0]})});
+function findD(t){let b=null,n=0;D.forEach(d=>d.z.forEach(a=>{if(t.includes(a)&&a.length>n){b=d;n=a.length}}));if(!b){const l=t.toLowerCase();D.forEach(d=>{if(l.includes(d.en.toLowerCase())&&d.en.length>n){b=d;n=d.en.length}})}return b}
+const hintQ=()=>[...D].sort(()=>Math.random()-.5).slice(0,2).map(d=>`“${d.z[0]}的英文怎么说?”`).join(" 或 ");
+async function say(en,hz){add("b ai",`${en}<small>${hz}</small>`);busy=1;await speak(en,.85);busy=0}
+async function teach(d,zh){fc.w=d;const a=/^[aeiou]/i.test(d.en)?"an":"a";d.sen=d.s||`This is ${a} ${d.en}.`;d.q=d.s?"How are you today?":"Do you like it?";d.qx=d.s?["I am fine","I am happy","I am good"]:["Yes I do","I like it","No I do not"];
+ add("b ai",`${d.e} “${zh}”的英文是 <b>${d.en}</b><small>${d.sen}</small>`);busy=1;await speak(zh+"的英文是",.9,"zh-CN");await speak(d.en,.6);await speak("Say it with me. "+d.en,.8);busy=0;fc.st="rep";fc.n=0;add("fb","🎤 跟我读: "+d.en)}
+async function askHandle(t){add("b me",t);const d=fc.w;
+ if(fc.st=="ask"){const m=findD(t);if(m)return teach(m,m.z[0]);
+  if(/[\u4e00-\u9fa5]/.test(t)){try{const r=await fetch(gu(),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:[{role:"user",content:`A young child asks in Chinese: "${t}". Reply with exactly two lines. Line 1: the English word. Line 2: one very simple English sentence using it. Nothing else.`}],max_tokens:60,temperature:.3})});const j=await r.json(),L=j.choices[0].message.content.trim().split("\n").map(x=>x.trim()).filter(Boolean);
+   if(L.length>=2)return teach({en:L[0].replace(/[^A-Za-z ]/g,"").trim(),e:"🔤",s:L[1]},t.replace(/[的用英文语怎么说读是什么叫？?]/g,"")||t)}catch(e){}}
+  add("b ai",`这个词我还不会 😅<small>试试问:${hintQ()}</small>`);return}
+ if(fc.st=="rep"){if(score(t,[d.en])>=.99){add("fb ok","🎉 太棒了 +1⭐");addStar(1);fc.st="sen";fc.n=0;await say("Great! Now a sentence. "+d.sen,"试试整句:"+d.sen)}
+  else if(++fc.n>=2){fc.st="sen";fc.n=0;await say("Nice try! Now a sentence. "+d.sen,"试试整句:"+d.sen)}else{add("fb bad","再试一次:"+d.en);await speak(d.en,.6)}return}
+ if(fc.st=="sen"){if(score(t,[d.sen])>=.7){add("fb ok","🎉 说得真好 +1⭐");addStar(1)}else{add("fb bad","参考:"+d.sen);await speak(d.sen,.7)}fc.st="q";await say(d.q,"请回答:"+d.qx[0]);return}
+ if(fc.st=="q"){if(score(t,d.qx)>=.5){add("fb ok","🎉 会聊天啦 +1⭐");addStar(1)}else{add("fb bad","可以说:"+d.qx[0]);await speak(d.qx[0],.7)}fc.st="ask";fc.w=null;add("fb","💡 继续问吧,比如:"+hintQ());busy=1;await speak("Great job! Ask me another word!",.85);busy=0}}
 let fc=null;
 const SYS={kids:"You are a friendly English teacher for a young child. Use very simple words and ONE short sentence. Be encouraging.",daily:"You are a friendly English conversation partner for a beginner (A2). Reply in 1-2 short sentences and end with a simple question.",biz:"You are a professional business English coach playing a colleague. Reply in 1-2 sentences, professional tone, and end with a question."};
-const LN={kids:"👶 宝宝/零基础",daily:"☕ 日常英语",biz:"💼 商务英语"};
+const LN={ask:"🧒 宝宝提问(问中文,学英文)",kids:"👶 宝宝/零基础",daily:"☕ 日常英语",biz:"💼 商务英语"};
 const gu=()=>{try{return localStorage.getItem("llm")||"http://127.0.0.1:8080/v1/chat/completions"}catch(e){return "http://127.0.0.1:8080/v1/chat/completions"}};
-function freeStart(l){fc={l,h:[]};$("#main").innerHTML=`<button class="back" onclick="home()">← 返回</button><div class="chat" id="chat"></div>`;
- $("#barwrap").innerHTML=`<div class="bar"><input id="ti" placeholder="输入或点麦克风说英文" onkeydown="if(event.key=='Enter')typed()"><button class="mic" id="mic" onclick="talk()">🎤</button></div>`;
- const g={kids:"Hello! What is your name?",daily:"Hi! How was your day?",biz:"Good morning. What do you do at work?"}[l];add("b ai",g);fc.h.push({role:"assistant",content:g});speak(g)}
-async function freeHandle(t){add("b me",t);fc.h.push({role:"user",content:t});const d=add("b ai","…");busy=1;
+function freeStart(l){fc={l,h:[],st:"ask"};live=true;AUTO=true;$("#main").innerHTML=`<button class="back" onclick="home()">← 返回</button><div class="chat" id="chat"></div>`;
+ $("#barwrap").innerHTML=`<div class="bar"><input id="ti" oninput="inp()" placeholder="输入或点麦克风说英文" onkeydown="if(event.key=='Enter')typed()"><button class="mic" id="mic" onclick="act()">🎤</button></div>`;
+ const g={ask:"Hello! Ask me a word!",kids:"Hello! What is your name?",daily:"Hi! How was your day?",biz:"Good morning. What do you do at work?"}[l];add("b ai",g);fc.h.push({role:"assistant",content:g});if(l=="ask"){add("fb","💡 用中文问,比如:桌子的英文怎么说?苹果用英语怎么读?");speak("你好!问我一个词吧!",.9,"zh-CN").then(()=>autoLoop(1));return}speak(g).then(()=>autoLoop(1))}
+async function freeHandle(t){if(fc.l=="ask")return askHandle(t);add("b me",t);fc.h.push({role:"user",content:t});const d=add("b ai","…");busy=1;
  try{const sys=SYS[fc.l]+" After your reply, on a new line write '纠正:' followed by a very short Chinese correction of the learner's last sentence, or '纠正: 很好' if it has no mistakes. Write nothing else.";
   const r=await fetch(gu(),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:[{role:"system",content:sys},...fc.h.slice(-8)],max_tokens:140,temperature:.7})});
   const j=await r.json();const raw=j.choices[0].message.content.trim();const parts=raw.split(/纠正[:：]/);const rep=parts[0].trim()||raw,tip=(parts[1]||"").trim();
   fc.h.push({role:"assistant",content:rep});d.innerHTML=rep+(tip?`<small>📝 ${tip}</small>`:"");addStar(1);busy=0;await speak(rep)}
  catch(e){busy=0;d.innerHTML="连接不到本地模型。请先在 Termux 启动 llama-server(见 README)。";d.className="fb bad"}}
-function home(){fc=null;$("#barwrap").innerHTML="";synth&&synth.cancel();
+function home(){fc=null;live=false;sess++;stopListen();$("#barwrap").innerHTML="";synth&&synth.cancel();
+ if(tab=="lib"){libHome();return}
  if(tab=="scan"){$("#main").innerHTML=`<p>拍下英文(书本、路牌、菜单),自动识别并朗读。</p><label class="card" style="display:block"><div class="e" style="font-size:40px">📷</div><b>拍照 / 选择图片</b><input id="pic" type="file" accept="image/*" capture="environment" hidden onchange="scanImg(this.files[0])"></label><div class="note" id="sst"></div><img id="sim" style="max-width:100%;border-radius:12px;margin-top:10px;display:none"><div id="sres"></div>`;return}
- if(tab=="chat"){$("#main").innerHTML=`<p>和本地 AI 自由聊天(离线)。选择水平:</p><div class="list">${Object.keys(LN).map(k=>`<button class="card" onclick="freeStart('${k}')"><b>${LN[k]}</b></button>`).join("")}</div><div class="note">模型地址:<input id="u" style="width:100%" value="${gu()}" onchange="try{localStorage.setItem('llm',this.value)}catch(e){}"></div>`;return}
- if(tab=="kids"){$("#main").innerHTML=`<p>点卡片听发音,再点 🎤 跟读,读对得星星!</p><div class="grid">${WORDS.map((w,i)=>`<button class="card" onclick="kid(${i})"><div class="e">${w[0]}</div><b>${w[1]}</b><small>${w[2]}</small></button>`).join("")}</div><div class="note" id="kn"></div>`;return}
+ if(tab=="chat"){$("#main").innerHTML=`<p>🧒 提问模式无需 AI 即可使用;其余三项需先启动本地 AI。</p><div class="list">${Object.keys(LN).map(k=>`<button class="card" onclick="freeStart('${k}')"><b>${LN[k]}</b></button>`).join("")}</div><div class="note">模型地址:<input id="u" style="width:100%" value="${gu()}" onchange="try{localStorage.setItem('llm',this.value)}catch(e){}"></div>`;return}
+ if(tab=="kids"){$("#main").innerHTML=`<p>点卡片听发音,再点 🎤 跟读,读对得星星!</p><div class="grid">${WS.map((w,i)=>`<button class="card" onclick="kid(${i})"><div class="e">${w[0]}</div><b>${w[1]}</b><small>${w[2]}</small></button>`).join("")}</div><div class="note" id="kn"></div><button class="sm" style="width:100%;margin:10px 0" onclick="shuf()">🔄 换一批新单词(共 ${WORDS.length} 个)</button><h3>💬 基础对话</h3><div class="list">${SCN.kids.map((s,i)=>`<button class="card" onclick="start(${i})"><b>${s.e} ${s.t}</b><small>${s.s.length} 轮 · 简单口语</small></button>`).join("")}</div>`;return}
  $("#main").innerHTML=`<div class="list">${SCN[tab].map((s,i)=>`<button class="card" onclick="start(${i})"><b>${s.e} ${s.t}</b><small>${s.s.length} 轮对话 · 语音互动</small></button>`).join("")}</div><div class="note">提示:请使用 Chrome / Safari 并允许麦克风。不支持语音识别时可用文字输入。</div>`}
-async function kid(i){const w=WORDS[i];$("#kn").textContent="听:"+w[1];await speak(w[1],.7);$("#kn").textContent="轮到你啦,大声说:"+w[1];const r=await listen();
+async function kid(i){const w=WS[i];$("#kn").textContent="听:"+w[1];await speak(w[1],.7);$("#kn").textContent="轮到你啦,大声说:"+w[1];const r=await listen();
  if(r===null){$("#kn").textContent="当前浏览器不支持语音识别,先听发音练习吧";return}
  if(score(r,[w[1]])>=1){addStar(1);$("#kn").textContent="🎉 太棒了!+1 ⭐";speak("Great job!")}else{$("#kn").textContent=`听到的是“${r||"…"}”,再试一次吧`;}}
 let sc,step,busy;
-function start(i){fc=null;sc=SCN[tab][i];step=0;$("#main").innerHTML=`<button class="back" onclick="home()">← 返回</button><div class="chat" id="chat"></div>`;
- $("#barwrap").innerHTML=`<div class="bar"><button class="sm" onclick="hint()">💡</button><input id="ti" placeholder="或输入英文回答" onkeydown="if(event.key=='Enter')typed()"><button class="mic" id="mic" onclick="talk()">🎤</button></div>`;aiSay()}
+function start(i){fc=null;live=true;AUTO=true;sc=SCN[tab][i];step=0;$("#main").innerHTML=`<button class="back" onclick="home()">← 返回</button><div class="chat" id="chat"></div>`;
+ $("#barwrap").innerHTML=`<div class="bar"><button class="sm" onclick="hint()">💡</button><input id="ti" oninput="inp()" placeholder="或输入英文回答" onkeydown="if(event.key=='Enter')typed()"><button class="mic" id="mic" onclick="act()">🎤</button></div>`;aiSay().then(()=>autoLoop(1))}
 const add=(c,h)=>{const d=document.createElement("div");d.className=c;d.innerHTML=h;$("#chat").appendChild(d);d.scrollIntoView({block:"end"});return d};
 async function aiSay(){const s=sc.s[step];add("b ai",`${s.a}<small>${s.z}</small>`);busy=1;await speak(s.a);busy=0}
 function hint(){if(fc)return;add("fb",`💡 参考回答:${sc.s[step].x[0]}`);speak(sc.s[step].x[0],.8)}
-async function talk(){if(busy)return;const m=$("#mic");m.classList.add("rec");busy=1;const r=await listen();m.classList.remove("rec");busy=0;
+async function talk(){if(busy)return;const m=$("#mic");m.classList.add("rec");busy=1;const r=await listen(fc&&fc.l=="ask"&&fc.st=="ask"?"zh-CN":"en-US");m.classList.remove("rec");busy=0;
  if(r===null){add("fb bad","此浏览器不支持语音识别,请用文字输入");return}
  if(!r){add("fb bad","没听清,再说一次吧");return}handle(r)}
-function typed(){const v=$("#ti").value.trim();if(v&&!busy){$("#ti").value="";handle(v)}}
+let AUTO=true,live=false,sess=0,curRec=null,listening=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms)),curLang=()=>fc&&fc.l=="ask"&&fc.st=="ask"?"zh-CN":"en-US";
+function stopListen(){try{curRec&&curRec.stop()}catch(e){}try{NP&&NP.SpeechRecognition&&NP.SpeechRecognition.stop()}catch(e){}}
+function tog(){const m=$("#mic");if(m)m.textContent=$("#ti").value.trim()?"➤":(AUTO?"🎤":"▶")}
+function inp(){if($("#ti").value.trim()&&AUTO){AUTO=false;sess++;stopListen()}tog()}
+function toggleAuto(){if(AUTO){AUTO=false;sess++;stopListen();tog();add("fb","⏸ 已暂停,点 ▶ 继续")}else{AUTO=true;add("fb","🎧 已恢复自动聆听");autoLoop()}}
+function autoLoop(first){if(!live)return;if(first)add("fb","🎧 自动对话已开启:直接说话,不用按键。点 🎤 可暂停");const my=++sess;tog();
+ (async()=>{let miss=0;while(my==sess&&live&&AUTO){if(busy){await sleep(300);continue}await sleep(400);if(my!=sess||!live||!AUTO)break;
+  const m=$("#mic");m&&m.classList.add("rec");busy=1;listening=true;const r=await listen(curLang());listening=false;busy=0;m&&m.classList.remove("rec");if(my!=sess||!live||!AUTO)break;
+  if(r===null){AUTO=false;tog();add("fb bad","此设备不支持语音识别,请用文字输入");break}
+  if(!r){if(++miss>=3){AUTO=false;tog();add("fb","⏸ 好像没听到声音,已暂停。点 ▶ 继续");break}continue}
+  miss=0;await handle(r)}})()}
+function act(){$("#ti").value.trim()?typed():toggleAuto()}
+async function typed(){const v=$("#ti").value.trim();if(!v||(busy&&!listening))return;sess++;stopListen();listening=false;busy=0;$("#ti").value="";AUTO=true;tog();await handle(v);if(live)autoLoop()}
 async function handle(t){if(fc)return freeHandle(t);add("b me",t);const s=sc.s[step],p=score(t,s.x);
  if(p>=.6){add("fb ok","✅ 很棒!+1 ⭐");addStar(1)}else{add("fb bad",`🔸 可以更好,试试:${s.x[0]}`);await speak(s.x[0],.8)}
- step++;if(step<sc.s.length){await aiSay()}else{add("fb ok","🎉 本场对话完成!");addStar(3);speak("Well done! See you next time.")}}
+ step++;if(step<sc.s.length){await aiSay()}else{live=false;add("fb ok","🎉 本场对话完成!");addStar(3);speak("Well done! See you next time.")}}
 nav();home();$("#stars").textContent="⭐ "+stars;
 </script></body></html>
