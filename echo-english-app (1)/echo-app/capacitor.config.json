@@ -1,0 +1,6 @@
+{
+  "appId": "com.echo.englishcoach",
+  "appName": "Echo英语陪练",
+  "webDir": "www",
+  "server": {"androidScheme": "http", "cleartext": true}
+}
